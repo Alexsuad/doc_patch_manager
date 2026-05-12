@@ -1,0 +1,64 @@
+# Entorno virtual Python
+.venv/
+venv/
+env/
+
+# Cachés de Python
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Cachés de pruebas
+.pytest_cache/
+.coverage
+htmlcov/
+
+# Salidas generadas por la herramienta
+output/
+reportes/
+documentos_generados/
+
+# Backups, ZIPs y archivos comprimidos
+*.zip
+*.tar
+*.tar.gz
+*.rar
+*.7z
+CMis Documentosarchivos_zip/
+*Copia*/
+*backup*/
+*Backup*/
+
+# Cachés y carpetas internas de herramientas/agentes
+.agents/cache/
+.agents/tmp/
+.agent_cache/
+.cache/
+test_cache/
+.cache/
+Installed/
+nodeids/
+
+# Archivos temporales
+*.tmp
+*.temp
+*.bak
+*.swp
+*.swo
+~$*
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+
+# Configuración local sensible o específica de máquina
+.env
+.env.*
+!.env.example
+local_settings.json
+config/local_settings.json
+
+# IDE / editor
+.vscode/
+.idea/

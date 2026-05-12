@@ -1,0 +1,14 @@
+{
+    "documento_base": "input/documentos_base/guia_estudiante.md",
+    "documento_salida": "output/documentos_generados/guia_estudiante_v2.md",
+    "crear_backup": true,
+    "generar_reporte": true,
+    "cambios": [
+        {
+            "id": "ADD_PYTHON_INFO",
+            "tipo": "insertar_despues",
+            "referencia": "## Introducción",
+            "contenido": "### Python\nPython es un lenguaje excelente para empezar."
+        }
+    ]
+}
