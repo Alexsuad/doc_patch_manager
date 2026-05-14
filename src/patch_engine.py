@@ -296,6 +296,10 @@ def aplicar_parches(contenido_documento: str, cambios: list[Cambio]) -> tuple[st
             {
                 "id": cambio.id,
                 "tipo": cambio.tipo,
+                "ref": cambio.referencia
+                or cambio.referencia_inicio
+                or cambio.referencia_fin
+                or "N/A",
                 "estado": "APLICADO",
             }
         )
