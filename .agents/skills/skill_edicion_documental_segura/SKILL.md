@@ -28,17 +28,31 @@ Estandarizar el flujo de edición, actualización y auditoría de documentos Mar
 - **No se declara éxito sin evidencia:** Todo estado "OK" debe estar respaldado por reportes de validación.
 - **No se maquilla el documento:** Si un documento no pasa el gate, se corrige el sistema o el parche, nunca el resultado a mano.
 
+## Modos de operación
+- **Modo auditoría:** El objetivo es exclusivamente revisar la salud estructural y normativa del documento.
+  - Se ejecuta el gate de estructura.
+  - Se entrega diagnóstico detallado.
+  - No se generan planes de cambio ni se aplican parches.
+- **Modo parche:** Flujo estándar para aplicar cambios validados.
+  - Se utiliza un plan JSON (preparado por el agente y aprobado por el usuario).
+  - Se ejecutan los gates de entrada, aplicación, diferencia y salida.
+- **Modo recuperación:** Uso exclusivo cuando el documento base devuelve un estado `MARKDOWN_BLOCKED`.
+  - El objetivo único es corregir el bloqueo estructural detectado.
+  - No se permiten cambios editoriales o de contenido adicionales no relacionados con el bloqueo.
+
 ## Flujo obligatorio
 1. **Contextualización:** Leer `GEMINI.md` y reglas del proyecto.
-2. **Identificación:** Definir claramente el documento base, el documento candidato y el lote de cambios (o plan JSON).
-3. **Gate de Entrada:** Ejecutar `src/validate_markdown_structure.py` sobre el documento base. Si es `MARKDOWN_BLOCKED`, detenerse.
-4. **Aplicación:** Convertir cambios a plan JSON y ejecutar `src/main.py` (doc_patch_manager).
-5. **Gate de Diferencia:** Ejecutar `src/verify_document_changes.py` comparando before vs after.
-6. **Gate de Salida:** Ejecutar `src/validate_markdown_structure.py` sobre el candidato final.
-7. **Consolidación:** Si todos los gates pasan, entregar evidencia y solicitar aprobación humana.
+2. **Identificación:** Definir claramente el documento base, el documento candidato y el lote de cambios deseados.
+3. **Gate de Entrada:** Ejecutar `src/validate_markdown_structure.py` sobre el documento base.
+   - Si el resultado es `MARKDOWN_BLOCKED`, detener la edición normal. Solo se puede continuar en **Modo recuperación** si el objetivo explícito es corregir dicho bloqueo.
+4. **Planificación:** El agente prepara el plan JSON de cambios. El usuario revisa y aprueba el plan antes de proceder.
+5. **Aplicación:** Ejecutar `src/main.py` utilizando el plan JSON aprobado.
+6. **Gate de Diferencia:** Ejecutar `src/verify_document_changes.py` comparando before vs after.
+7. **Gate de Salida:** Ejecutar `src/validate_markdown_structure.py` sobre el candidato final.
+8. **Consolidación:** Si todos los gates pasan, entregar evidencia y solicitar aprobación humana.
 
 ## Comandos estándar
-- `uv run pytest` (Siempre que haya cambios de código o configuración).
+- `uv run pytest` (Solo para verificar el entorno antes de operar).
 - `uv run python -m src.validate_markdown_structure --document <documento> --report <reporte>`
 - `uv run python -m src.main --plan <plan>`
 - `uv run python -m src.verify_document_changes --before <before> --after <after> --report <reporte>`
@@ -64,4 +78,6 @@ Estandarizar el flujo de edición, actualización y auditoría de documentos Mar
 - Prohibido corregir errores estructurales "a mano" en el candidato sin pasar por el flujo de parches.
 
 ## Criterio de cierre
-La tarea se considera finalizada únicamente cuando se entrega la evidencia literal de los tres gates y el documento candidato alcanza el estado `MARKDOWN_OK` o `MARKDOWN_WARNING` con aprobación explícita.
+La tarea se considera finalizada según el modo activo:
+- **Modo auditoría:** Entrega de reporte de gate estructural y diagnóstico detallado de hallazgos.
+- **Modo parche o recuperación:** Entrega de evidencia de aplicación del patch, reporte de verificación before/after y gate de salida con estado `MARKDOWN_OK` o `MARKDOWN_WARNING` aprobado explícitamente.
